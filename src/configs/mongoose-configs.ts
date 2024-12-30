@@ -15,7 +15,7 @@ const mongooseOptions: mongoose.ConnectOptions = {
 	// useUnifiedTopology: true,
 };
 
-export const connectDB = (): Connection => {
+export const connectDatabase = (): Connection => {
 	mongoose.connect(MONGO_URI, mongooseOptions);
 	const db = mongoose.connection;
 
@@ -31,4 +31,4 @@ export const connectDB = (): Connection => {
 	return db;
 };
 
-export default connectDB;
+export default connectDatabase;

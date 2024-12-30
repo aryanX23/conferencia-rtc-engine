@@ -2,16 +2,14 @@ import dotenv from "dotenv";
 import http from "http";
 import { Server } from "http";
 
-import { connectDB } from "./configs/mongoose-configs";
-import { SocketService } from "./configs/socket-configs";
-import { configureExpress } from "./configs/express-configs";
+import { connectDatabase, configureExpress, SocketService } from "@/configs";
 
 const { PORT = 8000 } = process.env || {};
 
 dotenv.config();
 
 // Database Connection
-const db = connectDB();
+const db = connectDatabase();
 
 db.on("error", (err: Error) => {
 	console.log("Mongoose error", err);
