@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+
 import { authenticateUser } from "../middlewares/authenticate-user";
 
 const { ORIGIN_URL = "http://localhost:3000" } = process.env || {};

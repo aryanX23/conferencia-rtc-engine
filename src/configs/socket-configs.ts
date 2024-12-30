@@ -8,9 +8,13 @@ export class SocketService {
 	constructor() {
 		this._io = new Server({
 			cors: {
-				allowedHeaders: ["*"],
 				origin: [ORIGIN_URL],
+				methods: ["GET", "POST"],
+				allowedHeaders: ["*"],
+				credentials: false,
 			},
+			transports: ["websocket", "polling"],
+			allowEIO3: true,
 		});
 		console.log("Socket Init Successful...");
 	}
@@ -25,6 +29,17 @@ export class SocketService {
 
 		io?.on("connection", (socket) => {
 			console.log("User connected", socket.id);
+
+			socket.on("join-room", (roomId, userId) => {
+				console.log("join room called -> ", roomId, userId);
+				socket.join(roomId);
+				socket.to(roomId).emit("user-connected", userId);
+
+				socket.on("disconnect", () => {
+					console.log("User disconnected ", userId);
+					socket.to(roomId).emit("user-disconnected", userId);
+				});
+			});
 		});
 	}
 }
