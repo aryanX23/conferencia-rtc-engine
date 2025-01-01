@@ -38,7 +38,7 @@ const generateJwt = (
 	return jwt.sign(tokenDetails, secret, { expiresIn });
 };
 
-export async function authenticateUser(req: any, res: any, next: any) {
+async function authenticateUser(req: any, res: any, next: any) {
 	try {
 		const accessToken = req.headers.authorization.split(" ")[1];
 		const refreshToken = req.headers["refresh-token"];
@@ -86,4 +86,4 @@ export async function authenticateUser(req: any, res: any, next: any) {
 	}
 }
 
-export { verifyJWT, generateJwt };
+export { verifyJWT, generateJwt, authenticateUser };

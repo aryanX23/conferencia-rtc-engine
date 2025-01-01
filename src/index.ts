@@ -1,9 +1,7 @@
 import dotenv from "dotenv";
-import http from "http";
-import { Server } from "http";
+import { createServer, Server } from "http";
 
 import { connectDatabase, configureExpress, SocketService } from "@/configs";
-
 const { PORT = 8000 } = process.env || {};
 
 dotenv.config();
@@ -19,11 +17,10 @@ db.once("open", async () => {
 	try {
 		// Initialize Express app
 		const app = configureExpress();
-		const server: Server = http.createServer(app);
+		const server: Server = createServer(app);
 
 		// Initialize Socket Service
-		const socketService = new SocketService();
-		socketService._io.attach(server);
+		const socketService = new SocketService(server);
 
 		// Start server
 		server.listen(PORT, () => {
@@ -37,5 +34,3 @@ db.once("open", async () => {
 		process.exit(1);
 	}
 });
-
-// Rest of the error handling code...
