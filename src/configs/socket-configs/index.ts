@@ -1,12 +1,13 @@
 import { Server } from "socket.io";
+import { Server as HttpServerType } from "http";
 
 const ORIGIN_URL = process.env.ORIGIN_URL ?? "http://localhost:3000";
 
-export class SocketService {
-	public _io: Server;
+export default class SocketService {
+	private _io: Server;
 
-	constructor() {
-		this._io = new Server({
+	constructor(server: HttpServerType) {
+		this._io = new Server(server, {
 			cors: {
 				origin: [ORIGIN_URL],
 				methods: ["GET", "POST"],
@@ -19,13 +20,16 @@ export class SocketService {
 		console.log("Socket Init Successful...");
 	}
 
-	getIO(): Server | null {
+	getIO(): Server {
 		return this._io;
 	}
 
 	initListeners(): void {
-		const io = this._io;
 		console.log("Initializing Socket Listeners..");
+		const io = this.getIO();
+
+		// Instantiating Namespaces
+		// const peerConnectionNamespace = io.of("/api/mediasoup");
 
 		io?.on("connection", (socket) => {
 			console.log("User connected", socket.id);
@@ -40,6 +44,7 @@ export class SocketService {
 					socket.to(roomId).emit("user-disconnected", userId);
 				});
 			});
+
 		});
 	}
 }
