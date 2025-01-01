@@ -1,10 +1,18 @@
-import { Server } from "socket.io";
+import { DefaultEventsMap, Namespace, Server } from "socket.io";
 import { Server as HttpServerType } from "http";
 
 const ORIGIN_URL = process.env.ORIGIN_URL ?? "http://localhost:3000";
 
 export default class SocketService {
 	private _io: Server;
+	private socketRouteMap: {
+		[key: string]: Namespace<
+			DefaultEventsMap,
+			DefaultEventsMap,
+			DefaultEventsMap,
+			any
+		>;
+	};
 
 	constructor(server: HttpServerType) {
 		this._io = new Server(server, {
@@ -17,6 +25,7 @@ export default class SocketService {
 			transports: ["websocket", "polling"],
 			allowEIO3: true,
 		});
+		this.socketRouteMap = {};
 		console.log("Socket Init Successful...");
 	}
 
@@ -24,27 +33,22 @@ export default class SocketService {
 		return this._io;
 	}
 
+	getSocketRouteMap(routeKey: string): Namespace<
+		DefaultEventsMap,
+		DefaultEventsMap,
+		DefaultEventsMap,
+		any
+		>{
+		return this.socketRouteMap[routeKey];
+	}
+
 	initListeners(): void {
 		console.log("Initializing Socket Listeners..");
 		const io = this.getIO();
 
-		// Instantiating Namespaces
-		// const peerConnectionNamespace = io.of("/api/mediasoup");
-
-		io?.on("connection", (socket) => {
-			console.log("User connected", socket.id);
-
-			socket.on("join-room", (roomId, userId) => {
-				console.log("join room called -> ", roomId, userId);
-				socket.join(roomId);
-				socket.to(roomId).emit("user-connected", userId);
-
-				socket.on("disconnect", () => {
-					console.log("User disconnected ", userId);
-					socket.to(roomId).emit("user-disconnected", userId);
-				});
-			});
-
-		});
+		// Instantiating Namespaces Route Map
+		this.socketRouteMap = {
+			"p2p-mediasoup-route": io.of("/mediasoup/p2p/"),
+		};
 	}
 }
