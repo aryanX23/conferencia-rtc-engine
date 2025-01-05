@@ -48,7 +48,7 @@ export default class SocketService {
 
 		// Instantiating Namespaces Route Map
 		this.socketRouteMap = {
-			"p2p-mediasoup-route": io.of("/mediasoup/p2p/"),
+			"p2p-mediasoup-namespace": io.of("/mediasoup/p2p/"),
 		};
 	}
 }

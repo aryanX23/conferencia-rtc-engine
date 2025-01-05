@@ -2,6 +2,8 @@ import { createWorker } from "mediasoup";
 import { Worker } from "mediasoup/node/lib/types";
 
 class MediasoupService {
+	constructor() {}
+
 	createWorker = async (): Promise<Worker> => {
 		const newWorker = await createWorker({
 			rtcMinPort: 2000, // Minimum port number for RTC traffic
