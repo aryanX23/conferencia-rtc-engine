@@ -29,6 +29,10 @@ db.once("open", async () => {
 
 		console.log("Connected to DB!");
 		socketService.initListeners();
+
+		// Adding Socket Instance to global state
+		global.socketService = socketService;
+
 	} catch (error) {
 		console.error("Server initialization failed:", error);
 		process.exit(1);

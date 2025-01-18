@@ -1,11 +1,24 @@
-import { createWorker } from "mediasoup";
-import { Worker } from "mediasoup/node/lib/types";
+import * as mediasoup from "mediasoup";
+import { Router, Worker } from "mediasoup/node/lib/types";
+
+import { workerOptions } from "@/configs/mediasoup-configs/media-config";
 
 class MediasoupService {
+	constructor() { };
+
+	worker: Array<{
+		worker: Worker
+		router: Router
+	}> = [];
+	
+	nextMediasoupWorkerIndex = 0;
+
 	createWorker = async (): Promise<Worker> => {
-		const newWorker = await createWorker({
-			rtcMinPort: 2000, // Minimum port number for RTC traffic
-			rtcMaxPort: 2020, // Maximum port number for RTC traffic
+		const newWorker = await mediasoup.createWorker({
+			logLevel: workerOptions.worker.logLevel,
+			logTags: workerOptions.worker.logTags,
+			rtcMinPort: workerOptions.worker.rtcMinPort,
+			rtcMaxPort: workerOptions.worker.rtcMaxPort,
 		});
 
 		// Log the worker process ID for reference
@@ -15,7 +28,7 @@ class MediasoupService {
 		newWorker.on("died", (error) => {
 			console.error("Mediasoup worker has died -> ", error);
 			setTimeout(() => {
-				process.exit();
+				process.exit(1);
 			}, 2000);
 		});
 
