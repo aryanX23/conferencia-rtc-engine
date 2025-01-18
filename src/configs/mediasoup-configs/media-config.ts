@@ -1,4 +1,9 @@
-import { RtpCodecCapability } from "mediasoup/node/lib/rtpParametersTypes";
+import os from "os";
+import {
+	TransportListenInfo,
+	RtpCodecCapability,
+	WorkerLogTag,
+} from "mediasoup/node/lib/types";
 
 const mediaCodecs: RtpCodecCapability[] = [
 	{
@@ -61,4 +66,25 @@ const mediaCodecs: RtpCodecCapability[] = [
 	},
 ];
 
-export default mediaCodecs;
+const webRtcTransportOptions = {
+	listenIps: [
+		{
+			ip: "0.0.0.0",
+			announcedIp: "127.0.0.1", // replace by public IP address before hosting
+		},
+	] as TransportListenInfo[],
+	listenIp: "0.0.0.0",
+	listenPort: 3016,
+};
+
+const workerOptions = {
+	numWorkers: Object.keys(os.cpus()).length,
+	worker: {
+		rtcMinPort: 10000,
+		rtcMaxPort: 10100,
+		logLevel: "debug",
+		logTags: ["info", "ice", "dtls", "rtp", "srtp", "rtcp"] as WorkerLogTag[],
+	},
+};
+
+export { mediaCodecs, webRtcTransportOptions, workerOptions };
