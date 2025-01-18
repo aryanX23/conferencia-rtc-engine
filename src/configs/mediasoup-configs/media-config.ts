@@ -85,6 +85,6 @@ const workerOptions = {
 		logLevel: "debug",
 		logTags: ["info", "ice", "dtls", "rtp", "srtp", "rtcp"] as WorkerLogTag[],
 	},
-};
+} as const;
 
 export { mediaCodecs, webRtcTransportOptions, workerOptions };
