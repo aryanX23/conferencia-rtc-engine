@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node --experimental-specifier-resolution=node dist/index.js",
-    "dev": "tsx watch src/index.ts"
+    "dev": "DEBUG=mediasoup:* tsx watch src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -46,6 +46,6 @@
     "@types/winston": "^2.4.4",
     "ts-node": "^10.9.2",
     "tsx": "^4.6.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.7.3"
   }
 }
