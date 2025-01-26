@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { createServer, Server } from "http";
 
-import { connectDatabase, configureExpress, SocketService } from "@/configs";
+import { connectDatabase, configureExpress, SocketService, MediasoupService } from "@/configs";
 const { PORT = 8000 } = process.env || {};
 
 dotenv.config();
@@ -21,6 +21,7 @@ db.once("open", async () => {
 
 		// Initialize Socket Service
 		const socketService = new SocketService(server);
+		const mediasoupService = new MediasoupService();
 
 		// Start server
 		server.listen(PORT, () => {
@@ -29,9 +30,11 @@ db.once("open", async () => {
 
 		console.log("Connected to DB!");
 		socketService.initListeners();
+		const mediasoupRouter = mediasoupService.createWorker();
 
 		// Adding Socket Instance to global state
 		global.socketService = socketService;
+		global.mediasoupRouter = mediasoupRouter;
 
 	} catch (error) {
 		console.error("Server initialization failed:", error);
