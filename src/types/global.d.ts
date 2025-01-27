@@ -1,10 +1,10 @@
 // types/global.d.ts
-import { SocketService } from "@/configs";
+import { SocketService, MediasoupService } from "@/configs";
 import { Worker } from "mediasoup/node/lib/types";
 
 declare global {
-	var socketService: SocketService;
-	var mediasoupRouter: Promise<Worker>;
+	var SocketService: SocketService;
+	var MediasoupService: MediasoupService;
 }
 
 export {};

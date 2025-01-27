@@ -30,11 +30,10 @@ db.once("open", async () => {
 
 		console.log("Connected to DB!");
 		socketService.initListeners();
-		const mediasoupRouter = mediasoupService.createWorker();
 
 		// Adding Socket Instance to global state
-		global.socketService = socketService;
-		global.mediasoupRouter = mediasoupRouter;
+		global.SocketService = socketService;
+		global.MediasoupService = mediasoupService;
 
 	} catch (error) {
 		console.error("Server initialization failed:", error);
