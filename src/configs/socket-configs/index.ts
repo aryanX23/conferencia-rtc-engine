@@ -1,6 +1,5 @@
 import { DefaultEventsMap, Namespace, Server } from "socket.io";
 import { Server as HttpServerType } from "http";
-import MediasoupService from "@/configs/mediasoup-configs";
 
 const ORIGIN_URL = process.env.ORIGIN_URL ?? "http://localhost:3000";
 
@@ -14,7 +13,6 @@ export default class SocketService {
 			any
 		>;
 	};
-	private mediasoupRouter: any;
 
 	constructor(server: HttpServerType) {
 		this._io = new Server(server, {
@@ -47,9 +45,6 @@ export default class SocketService {
 	initListeners(): void {
 		console.log("Initializing Socket Listeners..");
 		const io = this.getIO();
-
-		const mediasoupService = new MediasoupService();
-		this.mediasoupRouter = mediasoupService.createWorker();
 
 		// Instantiating Namespaces Route Map
 		this.socketRouteMap = {

@@ -1,19 +1,19 @@
 import * as mediasoup from "mediasoup";
 import { Router, Worker } from "mediasoup/node/lib/types";
 
-import { workerOptions } from "@/configs/mediasoup-configs/media-config";
+import { workerOptions, mediaCodecs } from "@/configs/mediasoup-configs/media-config";
 
 class MediasoupService {
-	constructor() { };
+	constructor() {}
 
 	worker: Array<{
-		worker: Worker
-		router: Router
+		worker: Worker;
+		router: Router;
 	}> = [];
-	
+
 	nextMediasoupWorkerIndex = 0;
 
-	createWorker = async (): Promise<Worker> => {
+	createWorker = async (): Promise<Router<mediasoup.types.AppData>> => {
 		const newWorker = await mediasoup.createWorker({
 			logLevel: workerOptions.worker.logLevel,
 			logTags: workerOptions.worker.logTags,
@@ -32,7 +32,8 @@ class MediasoupService {
 			}, 2000);
 		});
 
-		return newWorker;
+		const mediasoupRouter = await newWorker.createRouter({ mediaCodecs });
+		return mediasoupRouter;
 	};
 }
 
