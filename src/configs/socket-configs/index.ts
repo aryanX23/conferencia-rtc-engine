@@ -3,6 +3,8 @@ import { Server as HttpServerType } from "http";
 
 const ORIGIN_URL = process.env.ORIGIN_URL ?? "http://localhost:3000";
 
+import p2pSocketController from "@/modules/p2pSocketController";
+
 export default class SocketService {
 	private _io: Server;
 	private socketRouteMap: {
@@ -25,6 +27,7 @@ export default class SocketService {
 			transports: ["websocket", "polling"],
 			allowEIO3: true,
 		});
+
 		this.socketRouteMap = {};
 		console.log("Socket Init Successful...");
 	}
@@ -33,22 +36,22 @@ export default class SocketService {
 		return this._io;
 	}
 
-	getSocketRouteMap(routeKey: string): Namespace<
-		DefaultEventsMap,
-		DefaultEventsMap,
-		DefaultEventsMap,
-		any
-		>{
+	getSocketRouteMap(
+		routeKey: string
+	): Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any> {
 		return this.socketRouteMap[routeKey];
 	}
 
-	initListeners(): void {
+	async initListeners(): Promise<void> {
 		console.log("Initializing Socket Listeners..");
 		const io = this.getIO();
 
 		// Instantiating Namespaces Route Map
 		this.socketRouteMap = {
-			"p2p-mediasoup-namespace": io.of("/mediasoup/p2p/"),
+			"p2p-rtc-namespace": io.of("/rtc/p2p/"),
 		};
+
+		// Initializing Socket Listeners
+		await p2pSocketController(this.getSocketRouteMap("p2p-rtc-namespace"));
 	}
 }
