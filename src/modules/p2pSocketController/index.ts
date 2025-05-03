@@ -1,8 +1,9 @@
+import moment from "moment";
 import { Namespace } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
 import { logError, decodeJwtToken } from "@/utils";
-import moment from "moment";
+import { UserModel } from "@/models";
 
 const p2pSocketNamespaceController = async (
 	p2pSocketNamespace: Namespace<
@@ -31,7 +32,13 @@ const p2pSocketNamespaceController = async (
 					return next(new Error("Token expired"));
 				}
 				
-				
+				const [userDetails = {}] = await Promise.all([
+					UserModel.findOne({ userId }).lean(),
+				]);
+
+				if (!userDetails) {
+					return next(new Error("User or meeting not found"));
+				}
 
 				next();
 			})
